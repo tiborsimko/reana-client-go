@@ -9,11 +9,56 @@
 set -o errexit
 set -o nounset
 
-check_commitlint () {
+docs_shell_completions() {
+    # Check that shell completion files are up-to-date
+    go build -o reana-client-go .
+    temp_dir=$(mktemp -d)
+    trap 'rm -rf "$temp_dir"' EXIT
+
+    ./reana-client-go completion bash > "$temp_dir/reana-client-go"
+    ./reana-client-go completion zsh > "$temp_dir/_reana-client-go"
+
+    # Compare bash completion (our header is lines 1-19, Cobra output starts at line 20)
+    if ! diff -q <(tail -n +20 etc/bash_completion.d/reana-client-go) "$temp_dir/reana-client-go" /dev/null 2>&1; then
+        echo "✖   Bash completion file is out of date."
+        echo "    Please regenerate with: ./reana-client-go completion bash > etc/bash_completion.d/reana-client-go"
+        echo "    Then restore the file header."
+        exit 1
+    fi
+
+    # Compare zsh completion (line 1 is Cobra's #compdef, lines 2-22 are our header, line 23+ is Cobra's line 3+)
+    if ! diff -q <(sed -n '1p;23,$p' etc/zsh_completion.d/_reana-client-go) <(sed -n '1p;3,$p' "$temp_dir/_reana-client-go") /dev/null 2>&1; then
+        echo "✖   Zsh completion file is out of date."
+        echo "    Please regenerate with: ./reana-client-go completion zsh > etc/zsh_completion.d/_reana-client-go"
+        echo "    Then restore the file header."
+        exit 1
+    fi
+
+    echo "✔   Shell completion files are up-to-date."
+}
+
+format_go() {
+    make tidy
+    if [[ -n $(git status --porcelain) ]]; then
+        echo "Code is not properly formatted. Please run 'make tidy' locally."
+        git diff
+        exit 1
+    fi
+}
+
+go_tests() {
+    make test
+}
+
+lint_commitlint() {
     from=${2:-master}
     to=${3:-HEAD}
     pr=${4:-[0-9]+}
-    npx commitlint --from="$from" --to="$to"
+    if command -v commitlint >/dev/null 2>&1; then
+        commitlint --from="$from" --to="$to"
+    else
+        npx commitlint --from="$from" --to="$to"
+    fi
     found=0
     while IFS= read -r line; do
         commit_hash=$(echo "$line" | cut -d ' ' -f 1)
@@ -31,7 +76,7 @@ check_commitlint () {
         # (iii) check absence of merge commits in feature branches
         if [ "$commit_number_of_parents" -gt 1 ]; then
             if echo "$commit_title" | grep -qE "^chore\(.*\): merge "; then
-                break  # skip checking maint-to-master merge commits
+                break # skip checking maint-to-master merge commits
             else
                 echo "✖   Merge commits are not allowed in feature branches: $commit_title"
                 found=1
@@ -43,53 +88,50 @@ check_commitlint () {
     fi
 }
 
-check_shellcheck () {
+lint_goaudit() {
+    make audit
+}
+
+lint_shellcheck() {
     find . -name "*.sh" -exec shellcheck {} \+
 }
 
-check_shell_completions () {
-    # Check that shell completion files are up-to-date
-    go build -o reana-client-go .
-    temp_dir=$(mktemp -d)
-    trap 'rm -rf "$temp_dir"' EXIT
-
-    ./reana-client-go completion bash > "$temp_dir/reana-client-go"
-    ./reana-client-go completion zsh > "$temp_dir/_reana-client-go"
-
-    # Compare bash completion (our header is lines 1-19, Cobra output starts at line 20)
-    if ! diff -q <(tail -n +20 etc/bash_completion.d/reana-client-go) "$temp_dir/reana-client-go" > /dev/null 2>&1; then
-        echo "✖   Bash completion file is out of date."
-        echo "    Please regenerate with: ./reana-client-go completion bash > etc/bash_completion.d/reana-client-go"
-        echo "    Then restore the file header."
-        exit 1
-    fi
-
-    # Compare zsh completion (line 1 is Cobra's #compdef, lines 2-22 are our header, line 23+ is Cobra's line 3+)
-    if ! diff -q <(sed -n '1p;23,$p' etc/zsh_completion.d/_reana-client-go) <(sed -n '1p;3,$p' "$temp_dir/_reana-client-go") > /dev/null 2>&1; then
-        echo "✖   Zsh completion file is out of date."
-        echo "    Please regenerate with: ./reana-client-go completion zsh > etc/zsh_completion.d/_reana-client-go"
-        echo "    Then restore the file header."
-        exit 1
-    fi
-
-    echo "✔   Shell completion files are up-to-date."
+all() {
+    docs_shell_completions
+    format_go
+    go_tests
+    lint_commitlint
+    lint_goaudit
+    lint_shellcheck
 }
 
-check_all () {
-    check_commitlint
-    check_shellcheck
-    check_shell_completions
+help() {
+    echo "Usage: $0 [options]"
+    echo "Options:"
+    echo "  --all                      Perform all checks [default]"
+    echo "  --docs-shell-completions   Check shell completions are up-to-date"
+    echo "  --format-go                Check formatting of Go code"
+    echo "  --go-tests                 Check Go test suite"
+    echo "  --help                     Display this help message"
+    echo "  --lint-commitlint          Check linting of commit messages"
+    echo "  --lint-goaudit             Check linting of Go code"
+    echo "  --lint-shellcheck          Check linting of shell scripts"
 }
 
 if [ $# -eq 0 ]; then
-    check_all
+    all
     exit 0
 fi
 
 arg="$1"
 case $arg in
-    --check-commitlint) check_commitlint "$@";;
-    --check-shellcheck) check_shellcheck;;
-    --check-shell-completions) check_shell_completions;;
-    *) echo "[ERROR] Invalid argument '$arg'. Exiting." && exit 1;;
+--all) all ;;
+--help) help ;;
+--docs-shell-completions) docs_shell_completions ;;
+--format-go) format_go ;;
+--go-tests) go_tests ;;
+--lint-commitlint) lint_commitlint "$@" ;;
+--lint-goaudit) lint_goaudit ;;
+--lint-shellcheck) lint_shellcheck ;;
+*) echo "[ERROR] Invalid argument '$arg'. Exiting." && help && exit 1 ;;
 esac
