@@ -15,8 +15,8 @@ shell_completions() {
     temp_dir=$(mktemp -d)
     trap 'rm -rf "$temp_dir"' EXIT
 
-    ./reana-client-go completion bash > "$temp_dir/reana-client-go"
-    ./reana-client-go completion zsh > "$temp_dir/_reana-client-go"
+    ./reana-client-go completion bash >"$temp_dir/reana-client-go"
+    ./reana-client-go completion zsh >"$temp_dir/_reana-client-go"
 
     # Compare bash completion (our header is lines 1-19, Cobra output starts at line 20)
     if ! diff -q <(tail -n +20 etc/bash_completion.d/reana-client-go) "$temp_dir/reana-client-go" >/dev/null 2>&1; then
@@ -35,6 +35,14 @@ shell_completions() {
     fi
 
     echo "✔   Shell completion files are up-to-date."
+}
+
+format_prettier() {
+    prettier -c .
+}
+
+format_shfmt() {
+    find . -name "*.sh" -exec shfmt -d {} \+
 }
 
 format_go() {
@@ -103,6 +111,7 @@ lint_yamllint() {
 all() {
     shell_completions
     format_go
+    format_shfmt
     go_tests
     lint_commitlint
     lint_goaudit
@@ -116,6 +125,7 @@ help() {
     echo "  --all                      Perform all checks [default]"
     echo "  --shell-completions        Check shell completions are up-to-date"
     echo "  --format-go                Check formatting of Go code"
+    echo "  --format-shfmt             Check formatting of shell scripts"
     echo "  --go-tests                 Check Go test suite"
     echo "  --help                     Display this help message"
     echo "  --lint-commitlint          Check linting of commit messages"
@@ -135,6 +145,7 @@ case $arg in
 --help) help ;;
 --shell-completions) shell_completions ;;
 --format-go) format_go ;;
+--format-shfmt) format_shfmt ;;
 --go-tests) go_tests ;;
 --lint-commitlint) lint_commitlint "$@" ;;
 --lint-goaudit) lint_goaudit ;;
