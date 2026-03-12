@@ -37,6 +37,17 @@ jobs:
       - name: Check Go code formatting
         run: ./run-tests.sh --format-go
 
+  format-shfmt:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check shell script code formatting
+        run: |
+          sudo apt-get install shfmt
+          ./run-tests.sh --format-shfmt
+
   go-tests:
     runs-on: ubuntu-24.04
     steps:
