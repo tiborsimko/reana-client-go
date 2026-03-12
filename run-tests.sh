@@ -115,6 +115,7 @@ lint_yamllint() {
 all() {
     shell_completions
     format_go
+    format_prettier
     format_shfmt
     go_tests
     lint_commitlint
@@ -130,6 +131,7 @@ help() {
     echo "  --all                      Perform all checks [default]"
     echo "  --shell-completions        Check shell completions are up-to-date"
     echo "  --format-go                Check formatting of Go code"
+    echo "  --format-prettier          Check formatting of Markdown etc files"
     echo "  --format-shfmt             Check formatting of shell scripts"
     echo "  --go-tests                 Check Go test suite"
     echo "  --help                     Display this help message"
@@ -151,6 +153,7 @@ case $arg in
 --help) help ;;
 --shell-completions) shell_completions ;;
 --format-go) format_go ;;
+--format-prettier) format_prettier ;;
 --format-shfmt) format_shfmt ;;
 --go-tests) go_tests ;;
 --lint-commitlint) lint_commitlint "$@" ;;
