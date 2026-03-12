@@ -2,10 +2,7 @@
   "parameters": {},
   "specification": {
     "inputs": {
-      "files": [
-        "code/gendata.C",
-        "code/fitdata.C"
-      ],
+      "files": ["code/gendata.C", "code/fitdata.C"],
       "parameters": {
         "data": "results/data.root",
         "events": 20000,

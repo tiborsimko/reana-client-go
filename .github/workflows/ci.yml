@@ -18,7 +18,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25.7'
+          go-version: "1.25.7"
 
       - name: Check shell completions are up-to-date
         run: ./run-tests.sh --docs-shell-completions
@@ -32,10 +32,24 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25.7'
+          go-version: "1.25.7"
 
       - name: Check Go code formatting
         run: ./run-tests.sh --format-go
+
+  format-prettier:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+
+      - name: Check Prettier code formatting
+        run: |
+          npm install prettier --global
+          ./run-tests.sh --format-prettier
 
   format-shfmt:
     runs-on: ubuntu-24.04
@@ -57,7 +71,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25.7'
+          go-version: "1.25.7"
 
       - name: Run Go test suite
         run: ./run-tests.sh --go-tests
@@ -102,7 +116,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25.7'
+          go-version: "1.25.7"
 
       - name: Run Go audit checks
         run: ./run-tests.sh --lint-goaudit

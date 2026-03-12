@@ -7,10 +7,10 @@
 
 ## About
 
-REANA-Client-Go is a component of the [REANA](https://www.reana.io/)
-reusable and reproducible research data analysis platform. It provides a
-command-line tool that allows researchers to submit, run, and manage
-their computational workflows.
+REANA-Client-Go is a component of the [REANA](https://www.reana.io/) reusable
+and reproducible research data analysis platform. It provides a command-line
+tool that allows researchers to submit, run, and manage their computational
+workflows.
 
 - seed workspace with input code and data
 - run computational workflows on remote compute clouds
