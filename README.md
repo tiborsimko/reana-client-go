@@ -5,18 +5,19 @@
 [![image](https://img.shields.io/badge/discourse-forum-blue.svg)](https://forum.reana.io)
 [![image](https://img.shields.io/github/license/reanahub/reana.svg)](https://github.com/reanahub/reana-client-go/blob/master/LICENSE)
 
-# About
+## About
 
-REANA-Client-Go is a component of the [REANA](https://www.reana.io/) reusable and
-reproducible research data analysis platform. It provides a command-line tool that allows
-researchers to submit, run, and manage their computational workflows.
+REANA-Client-Go is a component of the [REANA](https://www.reana.io/)
+reusable and reproducible research data analysis platform. It provides a
+command-line tool that allows researchers to submit, run, and manage
+their computational workflows.
 
 - seed workspace with input code and data
 - run computational workflows on remote compute clouds
 - list submitted workflows and enquire about their statuses
 - download results of finished workflows
 
-# Usage
+## Usage
 
 The detailed information on how to install and use REANA can be found in
 [docs.reana.io](https://docs.reana.io).
@@ -40,7 +41,7 @@ source <(reana-client-go completion zsh)
 compdef _reana-client-go reana-client-go
 ```
 
-# Useful links
+## Useful links
 
 - [REANA project home page](http://www.reana.io/)
 - [REANA user documentation](https://docs.reana.io)
