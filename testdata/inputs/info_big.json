@@ -55,6 +55,10 @@
     "title": "Maximum timeout for Kubernetes jobs",
     "value": "500"
   },
+  "kubernetes_min_user_uid": {
+    "title": "Minimum allowed user runtime container UID for Kubernetes jobs",
+    "value": 100
+  },
   "maximum_workspace_retention_period": {
     "title": "Maximum retention period in days for workspace files",
     "value": "250"

@@ -49,6 +49,7 @@ func TestInfo(t *testing.T) {
 				"Maximum allowed memory request for Kubernetes jobs: 5Gi",
 				"Default memory limit for Kubernetes jobs: 3Gi",
 				"Maximum allowed memory limit for Kubernetes jobs: 10Gi",
+				"Minimum allowed user runtime container UID for Kubernetes jobs: 100",
 				"Maximum inactivity period in days before automatic closure of interactive sessions: 7",
 				"Maximum timeout for Kubernetes jobs: 500",
 				"Maximum retention period in days for workspace files: 250",

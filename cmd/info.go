@@ -180,6 +180,13 @@ func (o *infoOptions) run(cmd *cobra.Command) error {
 		if p.KubernetesMaxMemoryRequest != nil {
 			displayInfoStringItem(cmd, p.KubernetesMaxMemoryRequest.Title, p.KubernetesMaxMemoryRequest.Value)
 		}
+		if p.KubernetesMinUserUID != nil {
+			cmd.Printf(
+				"%s: %d\n",
+				p.KubernetesMinUserUID.Title,
+				p.KubernetesMinUserUID.Value,
+			)
+		}
 		if p.MaximumInteractiveSessionInactivityPeriod != nil {
 			displayInfoStringItem(cmd, p.MaximumInteractiveSessionInactivityPeriod.Title, p.MaximumInteractiveSessionInactivityPeriod.Value)
 		}

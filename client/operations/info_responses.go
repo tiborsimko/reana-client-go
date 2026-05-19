@@ -302,6 +302,9 @@ type InfoOKBody struct {
 	// kubernetes max memory request
 	KubernetesMaxMemoryRequest *InfoOKBodyKubernetesMaxMemoryRequest `json:"kubernetes_max_memory_request,omitempty"`
 
+	// kubernetes min user uid
+	KubernetesMinUserUID *InfoOKBodyKubernetesMinUserUID `json:"kubernetes_min_user_uid,omitempty"`
+
 	// maximum interactive session inactivity period
 	MaximumInteractiveSessionInactivityPeriod *InfoOKBodyMaximumInteractiveSessionInactivityPeriod `json:"maximum_interactive_session_inactivity_period,omitempty"`
 
@@ -431,6 +434,10 @@ func (o *InfoOKBody) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := o.validateKubernetesMaxMemoryRequest(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateKubernetesMinUserUID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -1051,6 +1058,29 @@ func (o *InfoOKBody) validateKubernetesMaxMemoryRequest(formats strfmt.Registry)
 	return nil
 }
 
+func (o *InfoOKBody) validateKubernetesMinUserUID(formats strfmt.Registry) error {
+	if swag.IsZero(o.KubernetesMinUserUID) { // not required
+		return nil
+	}
+
+	if o.KubernetesMinUserUID != nil {
+		if err := o.KubernetesMinUserUID.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("infoOK" + "." + "kubernetes_min_user_uid")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("infoOK" + "." + "kubernetes_min_user_uid")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (o *InfoOKBody) validateMaximumInteractiveSessionInactivityPeriod(formats strfmt.Registry) error {
 	if swag.IsZero(o.MaximumInteractiveSessionInactivityPeriod) { // not required
 		return nil
@@ -1359,6 +1389,10 @@ func (o *InfoOKBody) ContextValidate(ctx context.Context, formats strfmt.Registr
 	}
 
 	if err := o.contextValidateKubernetesMaxMemoryRequest(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateKubernetesMinUserUID(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -2020,6 +2054,31 @@ func (o *InfoOKBody) contextValidateKubernetesMaxMemoryRequest(ctx context.Conte
 			ce := new(errors.CompositeError)
 			if stderrors.As(err, &ce) {
 				return ce.ValidateName("infoOK" + "." + "kubernetes_max_memory_request")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *InfoOKBody) contextValidateKubernetesMinUserUID(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.KubernetesMinUserUID != nil {
+
+		if swag.IsZero(o.KubernetesMinUserUID) { // not required
+			return nil
+		}
+
+		if err := o.KubernetesMinUserUID.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("infoOK" + "." + "kubernetes_min_user_uid")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("infoOK" + "." + "kubernetes_min_user_uid")
 			}
 
 			return err
@@ -3290,6 +3349,47 @@ func (o *InfoOKBodyKubernetesMaxMemoryRequest) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *InfoOKBodyKubernetesMaxMemoryRequest) UnmarshalBinary(b []byte) error {
 	var res InfoOKBodyKubernetesMaxMemoryRequest
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+/*
+InfoOKBodyKubernetesMinUserUID info o k body kubernetes min user UID
+swagger:model InfoOKBodyKubernetesMinUserUID
+*/
+type InfoOKBodyKubernetesMinUserUID struct {
+
+	// title
+	Title string `json:"title,omitempty"`
+
+	// value
+	Value int64 `json:"value,omitempty"`
+}
+
+// Validate validates this info o k body kubernetes min user UID
+func (o *InfoOKBodyKubernetesMinUserUID) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this info o k body kubernetes min user UID based on context it is used
+func (o *InfoOKBodyKubernetesMinUserUID) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *InfoOKBodyKubernetesMinUserUID) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *InfoOKBodyKubernetesMinUserUID) UnmarshalBinary(b []byte) error {
+	var res InfoOKBodyKubernetesMinUserUID
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
