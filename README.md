@@ -22,6 +22,31 @@ workflows.
 The detailed information on how to install and use REANA can be found in
 [docs.reana.io](https://docs.reana.io).
 
+### Installation from source
+
+Install the executable into the Go binary directory:
+
+```console
+$ make install
+```
+
+The destination defaults to the value of `go env GOBIN`, or to
+`$(go env GOPATH)/bin` when `GOBIN` is not configured. Make sure that this
+directory is present in `PATH`.
+
+Set `BINDIR` to an absolute path to choose a different destination, such as a
+Python virtual environment's scripts directory:
+
+```console
+$ make install BINDIR=/path/to/virtualenv/bin
+```
+
+Use the same destination to remove the executable:
+
+```console
+$ make uninstall BINDIR=/path/to/virtualenv/bin
+```
+
 ### Bundling additional workflow source files
 
 The `create` and `validate` commands upload a scoped specification bundle for
